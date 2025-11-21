@@ -4,68 +4,126 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal-content {
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  min-width: 300px;
+  background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  min-width: 280px;
+  max-width: 90vw;
+  border: 2px solid rgba(244, 228, 193, 0.3);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .modal-content h3 {
-  margin: 0 0 10px 0;
-  color: #2c3e50;
+  margin: 0 0 12px 0;
+  color: #f4e4c1;
   text-align: center;
+  font-size: 16px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
 .card-color-info {
   text-align: center;
-  margin-bottom: 20px;
-  color: #34495e;
+  margin-bottom: 16px;
+  color: #d4c4a1;
+  font-size: 13px;
 }
 
 .color-badge {
-  padding: 4px 12px;
-  border-radius: 4px;
+  padding: 6px 16px;
+  border-radius: 6px;
   font-weight: bold;
+  display: inline-block;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .color-badge.white {
-  background: #f0f0f0;
-  color: #333;
-  border: 1px solid #ddd;
+  background: linear-gradient(145deg, #fafafa, #e8e8e8);
+  color: #1a1a1a;
+  border: 2px solid #d0d0d0;
 }
 
 .color-badge.black {
-  background: #2c2c2c;
+  background: linear-gradient(145deg, #2a2a2a, #0a0a0a);
   color: white;
+  border: 2px solid #404040;
 }
 
-.form-group {
-  margin-bottom: 20px;
+.number-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 16px 0;
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  color: #34495e;
-  font-weight: 500;
+.number-btn {
+  padding: 14px;
+  font-size: 18px;
+  font-weight: bold;
+  border: 2px solid rgba(244, 228, 193, 0.3);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  color: #f4e4c1;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
-.form-group input[type="number"] {
-  width: 100%;
-  padding: 10px;
-  border: 2px solid #ddd;
-  border-radius: 5px;
-  font-size: 16px;
-  box-sizing: border-box;
+.number-btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(244, 228, 193, 0.6);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.number-btn:active {
+  transform: translateY(0);
+}
+
+.number-btn.selected {
+  background: linear-gradient(145deg, #27ae60, #229954);
+  border-color: #27ae60;
+  color: white;
+  box-shadow:
+    0 4px 10px rgba(39, 174, 96, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.number-btn.selected:hover {
+  transform: scale(1.05) translateY(-2px);
 }
 
 .color-options {
@@ -110,7 +168,7 @@
 .modal-actions {
   display: flex;
   gap: 10px;
-  margin-top: 25px;
+  margin-top: 20px;
 }
 
 .btn-submit,
@@ -118,26 +176,46 @@
   flex: 1;
   padding: 12px;
   border: none;
-  border-radius: 5px;
-  font-size: 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
 }
 
 .btn-submit {
-  background-color: #27ae60;
+  background: linear-gradient(145deg, #27ae60, #229954);
   color: white;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
 }
 
-.btn-submit:hover {
-  background-color: #229954;
+.btn-submit:disabled {
+  background: linear-gradient(145deg, #7f8c8d, #6c7a7b);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(39, 174, 96, 0.4);
+}
+
+.btn-submit:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .btn-cancel {
-  background-color: #95a5a6;
+  background: linear-gradient(145deg, #95a5a6, #7f8c8d);
   color: white;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
 }
 
 .btn-cancel:hover {
-  background-color: #7f8c8d;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(149, 165, 166, 0.4);
+}
+
+.btn-cancel:active {
+  transform: translateY(0);
 }

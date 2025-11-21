@@ -28,3 +28,10 @@ yarn-error.log*
 .idea/
 *.swp
 *.swo
+
+# Security - SSH Keys
+*.pem
+*.key
+
+# Build artifacts
+*.tar.gz

@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import Lobby from './pages/Lobby';
 import GameBoard from './components/GameBoard';
+import DesignTest from './pages/DesignTest';
+import Toast from './components/Toast';
 import socketService from './services/socket';
 import './App.css';
 
 function App() {
   const [gameState, setGameState] = useState(null);
   const [isInGame, setIsInGame] = useState(false);
+  const [toast, setToast] = useState(null);
+
+  // URL 경로 체크
+  const isDesignTest = window.location.pathname === '/design-test';
+
+  const showToast = (message, type = 'info') => {
+    setToast({ message, type });
+  };
 
   useEffect(() => {
     if (isInGame) {
@@ -23,13 +33,13 @@ function App() {
 
       // 게임 종료 리스너
       socketService.onGameEnded((data) => {
-        alert(`게임 종료! 승자: ${data.winner.name}`);
+        showToast(`게임 종료! 승자: ${data.winner.name}`, 'info');
       });
 
       // 플레이어 퇴장 리스너
       socketService.onPlayerLeft(() => {
-        alert('상대방이 나갔습니다. 로비로 돌아갑니다.');
-        handleLeaveGame();
+        showToast('상대방이 나갔습니다. 로비로 돌아갑니다.', 'error');
+        setTimeout(() => handleLeaveGame(), 2000);
       });
 
       return () => {
@@ -48,12 +58,12 @@ function App() {
   const handleGuess = (cardIndex, number) => {
     socketService.guessCard(cardIndex, number, (response) => {
       if (!response.success) {
-        alert('오류: ' + response.error);
+        showToast('오류: ' + response.error, 'error');
       } else {
         if (response.correct) {
-          console.log('정답!');
+          showToast('정답입니다!', 'success');
         } else {
-          console.log('오답!');
+          showToast('틀렸습니다!', 'error');
         }
       }
     });
@@ -70,7 +80,9 @@ function App() {
 
   return (
     <div className="App">
-      {isInGame && gameState ? (
+      {isDesignTest ? (
+        <DesignTest />
+      ) : isInGame && gameState ? (
         <GameBoard
           gameState={gameState}
           onGuess={handleGuess}
@@ -78,6 +90,14 @@ function App() {
         />
       ) : (
         <Lobby onGameStart={handleGameStart} />
+      )}
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
       )}
     </div>
   );

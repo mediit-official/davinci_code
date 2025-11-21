@@ -81,10 +81,9 @@ function setupGameHandlers(io, socket) {
     }
   });
 
-  // 카드 맞추기
-  socket.on('guess-card', (data, callback) => {
+  // 카드 뽑기
+  socket.on('draw-card', (data, callback) => {
     try {
-      const { cardIndex, number, color } = data;
       const game = gameManager.getGameByPlayerId(socket.id);
 
       if (!game) {
@@ -92,7 +91,43 @@ function setupGameHandlers(io, socket) {
         return;
       }
 
-      const result = game.guessCard(socket.id, cardIndex, number, color);
+      const result = game.drawCard(socket.id);
+
+      if (!result.success) {
+        callback(result);
+        return;
+      }
+
+      callback(result);
+
+      // 모든 플레이어에게 게임 상태 업데이트 전송
+      const room = gameManager.getRoomByPlayerId(socket.id);
+
+      if (room) {
+        room.players.forEach(player => {
+          io.to(player.id).emit('game-updated', {
+            gameState: game.getGameState(player.id)
+          });
+        });
+      }
+    } catch (error) {
+      console.error('Error drawing card:', error);
+      callback({ success: false, error: error.message });
+    }
+  });
+
+  // 카드 맞추기 (숫자만)
+  socket.on('guess-card', (data, callback) => {
+    try {
+      const { cardIndex, number } = data;
+      const game = gameManager.getGameByPlayerId(socket.id);
+
+      if (!game) {
+        callback({ success: false, error: 'Game not found' });
+        return;
+      }
+
+      const result = game.guessCard(socket.id, cardIndex, number);
 
       if (!result.success) {
         callback(result);
@@ -125,6 +160,41 @@ function setupGameHandlers(io, socket) {
       }
     } catch (error) {
       console.error('Error guessing card:', error);
+      callback({ success: false, error: error.message });
+    }
+  });
+
+  // 턴 패스
+  socket.on('pass-turn', (data, callback) => {
+    try {
+      const game = gameManager.getGameByPlayerId(socket.id);
+
+      if (!game) {
+        callback({ success: false, error: 'Game not found' });
+        return;
+      }
+
+      const result = game.passTurn(socket.id);
+
+      if (!result.success) {
+        callback(result);
+        return;
+      }
+
+      callback(result);
+
+      // 모든 플레이어에게 게임 상태 업데이트 전송
+      const room = gameManager.getRoomByPlayerId(socket.id);
+
+      if (room) {
+        room.players.forEach(player => {
+          io.to(player.id).emit('game-updated', {
+            gameState: game.getGameState(player.id)
+          });
+        });
+      }
+    } catch (error) {
+      console.error('Error passing turn:', error);
       callback({ success: false, error: error.message });
     }
   });

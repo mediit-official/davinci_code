@@ -45,9 +45,19 @@ class SocketService {
     this.socket.emit('get-rooms', callback);
   }
 
-  // 카드 맞추기
-  guessCard(cardIndex, number, color, callback) {
-    this.socket.emit('guess-card', { cardIndex, number, color }, callback);
+  // 카드 뽑기
+  drawCard(callback) {
+    this.socket.emit('draw-card', {}, callback);
+  }
+
+  // 카드 맞추기 (숫자만)
+  guessCard(cardIndex, number, callback) {
+    this.socket.emit('guess-card', { cardIndex, number }, callback);
+  }
+
+  // 턴 패스
+  passTurn(callback) {
+    this.socket.emit('pass-turn', {}, callback);
   }
 
   // 게임 상태 가져오기

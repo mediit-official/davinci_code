@@ -20,9 +20,32 @@
 }
 
 .modal-content h3 {
-  margin: 0 0 20px 0;
+  margin: 0 0 10px 0;
   color: #2c3e50;
   text-align: center;
+}
+
+.card-color-info {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #34495e;
+}
+
+.color-badge {
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.color-badge.white {
+  background: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.color-badge.black {
+  background: #2c2c2c;
+  color: white;
 }
 
 .form-group {

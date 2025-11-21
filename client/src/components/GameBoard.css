@@ -43,6 +43,70 @@
   color: #2c3e50;
 }
 
+.turn-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.draw-card-btn {
+  padding: 12px 30px;
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.draw-card-btn:hover {
+  background-color: #229954;
+}
+
+.instruction {
+  margin: 0;
+  color: #7f8c8d;
+  font-size: 14px;
+}
+
+.continue-options {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.continue-options button {
+  padding: 10px 25px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.continue-btn {
+  background-color: #3498db;
+  color: white;
+}
+
+.continue-btn:hover {
+  background-color: #2980b9;
+}
+
+.pass-btn {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.pass-btn:hover {
+  background-color: #7f8c8d;
+}
+
 .game-content {
   display: flex;
   gap: 20px;

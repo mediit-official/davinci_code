@@ -18,9 +18,10 @@ class Card {
   }
 
   toPublicJSON() {
+    // 상대방에게는 색상은 항상 보이고, 숫자만 공개되었을 때 보임
     return {
       number: this.isRevealed ? this.number : null,
-      color: this.isRevealed ? this.color : null,
+      color: this.color, // 색상은 항상 보임
       isRevealed: this.isRevealed
     };
   }

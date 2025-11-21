@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(tree:*)",
+      "Bash(npm install)",
+      "Bash(npm run build:*)",
+      "Bash(chmod:*)",
+      "Bash(ssh:*)",
+      "Bash(scp:*)",
+      "Bash(tar -czf:*)",
+      "Bash(git add:*)",
+      "Bash(git reset:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(curl:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

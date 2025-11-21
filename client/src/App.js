@@ -45,12 +45,16 @@ function App() {
     setIsInGame(true);
   };
 
-  const handleGuess = (cardIndex, number, color) => {
-    socketService.guessCard(cardIndex, number, color, (response) => {
+  const handleGuess = (cardIndex, number) => {
+    socketService.guessCard(cardIndex, number, (response) => {
       if (!response.success) {
         alert('오류: ' + response.error);
       } else {
-        console.log('추측 결과:', response);
+        if (response.correct) {
+          console.log('정답!');
+        } else {
+          console.log('오답!');
+        }
       }
     });
   };

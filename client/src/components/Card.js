@@ -13,7 +13,11 @@ function Card({ card, index, isOwn, onGuess }) {
       className={`card ${card.color} ${card.isRevealed ? 'revealed' : 'hidden'} ${!isOwn && !card.isRevealed ? 'clickable' : ''}`}
       onClick={handleClick}
     >
-      {card.isRevealed || isOwn ? (
+      {card.isRevealed ? (
+        <div className="card-content">
+          <div className="card-number">{card.number}</div>
+        </div>
+      ) : isOwn ? (
         <div className="card-content">
           <div className="card-number">{card.number}</div>
         </div>

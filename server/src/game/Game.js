@@ -43,8 +43,28 @@ class Game {
     return this.getCurrentPlayer().id === playerId;
   }
 
-  // 상대방 카드 맞추기
-  guessCard(playerId, cardIndex, guessedNumber, guessedColor) {
+  // 덱에서 카드 뽑기 (턴 시작 시)
+  drawCard(playerId) {
+    if (!this.isPlayerTurn(playerId)) {
+      return { success: false, error: 'Not your turn' };
+    }
+
+    if (this.deck.isEmpty()) {
+      return { success: false, error: 'No cards left in deck' };
+    }
+
+    const currentPlayer = this.getCurrentPlayer();
+    const card = this.deck.draw();
+    currentPlayer.addCard(card);
+
+    return {
+      success: true,
+      card: card.toJSON()
+    };
+  }
+
+  // 상대방 카드 맞추기 (숫자만)
+  guessCard(playerId, cardIndex, guessedNumber) {
     if (!this.isPlayerTurn(playerId)) {
       return { success: false, error: 'Not your turn' };
     }
@@ -61,7 +81,8 @@ class Game {
       return { success: false, error: 'Card already revealed' };
     }
 
-    const isCorrect = targetCard.number === guessedNumber && targetCard.color === guessedColor;
+    // 숫자만 비교 (색상은 이미 보임)
+    const isCorrect = targetCard.number === guessedNumber;
 
     if (isCorrect) {
       // 맞춤: 카드 공개, 추가 턴
@@ -86,17 +107,9 @@ class Game {
         revealedCard: targetCard.toJSON()
       };
     } else {
-      // 틀림: 자신의 카드 하나 공개 (가장 작은 숫자의 미공개 카드)
+      // 틀림: 방금 뽑은 카드를 공개
       const currentPlayer = this.getCurrentPlayer();
-      let revealed = false;
-
-      for (let i = 0; i < currentPlayer.cards.length; i++) {
-        if (!currentPlayer.cards[i].isRevealed) {
-          currentPlayer.revealCard(i);
-          revealed = true;
-          break;
-        }
-      }
+      const revealedCard = currentPlayer.revealLastDrawnCard();
 
       // 자신의 모든 카드가 공개되었는지 확인
       if (currentPlayer.checkAllRevealed()) {
@@ -105,7 +118,8 @@ class Game {
           success: true,
           correct: false,
           gameEnded: true,
-          winner: this.winner
+          winner: this.winner,
+          revealedCard: revealedCard ? revealedCard.toJSON() : null
         };
       }
 
@@ -115,9 +129,22 @@ class Game {
       return {
         success: true,
         correct: false,
-        ownCardRevealed: revealed
+        revealedCard: revealedCard ? revealedCard.toJSON() : null
       };
     }
+  }
+
+  // 턴 패스 (맞춘 후 더 이상 맞추지 않고 넘기기)
+  passTurn(playerId) {
+    if (!this.isPlayerTurn(playerId)) {
+      return { success: false, error: 'Not your turn' };
+    }
+
+    const currentPlayer = this.getCurrentPlayer();
+    currentPlayer.clearLastDrawnCard(); // 뽑은 카드 정보 초기화
+    this.switchTurn();
+
+    return { success: true };
   }
 
   switchTurn() {

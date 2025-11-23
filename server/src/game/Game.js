@@ -10,19 +10,55 @@ class Game {
       new Player(player2.id, player2.name)
     ];
     this.currentPlayerIndex = 0;
-    this.status = 'waiting'; // waiting, playing, finished
+    this.status = 'selecting'; // selecting, playing, finished
     this.winner = null;
     this.createdAt = Date.now();
+    this.playerSelections = {}; // 플레이어별 카드 선택 저장
+    this.guessHistory = []; // 추측 기록 저장
+    this.lastGuess = null; // 마지막 추측 정보
+  }
 
-    this.initializeGame();
+  // 플레이어가 원하는 색상별 카드 개수 선택
+  selectInitialCards(playerId, blackCount, whiteCount) {
+    if (blackCount + whiteCount !== 4) {
+      return { success: false, error: 'Total must be 4 cards' };
+    }
+
+    if (blackCount < 0 || whiteCount < 0) {
+      return { success: false, error: 'Invalid card counts' };
+    }
+
+    this.playerSelections[playerId] = { blackCount, whiteCount };
+
+    // 두 플레이어가 모두 선택했는지 확인
+    if (Object.keys(this.playerSelections).length === 2) {
+      this.initializeGame();
+    }
+
+    return { success: true };
   }
 
   initializeGame() {
-    // 각 플레이어에게 4장씩 카드 분배
-    for (let i = 0; i < 4; i++) {
-      this.players[0].addCard(this.deck.draw());
-      this.players[1].addCard(this.deck.draw());
-    }
+    // 각 플레이어에게 선택한 색상별로 카드 분배
+    this.players.forEach(player => {
+      const selection = this.playerSelections[player.id];
+      if (!selection) {
+        // 기본값: 랜덤
+        selection = { blackCount: 2, whiteCount: 2 };
+      }
+
+      // 검은색 카드 분배
+      for (let i = 0; i < selection.blackCount; i++) {
+        const card = this.deck.drawByColor('black');
+        if (card) player.addCard(card, true); // true = 초기 카드
+      }
+
+      // 흰색 카드 분배
+      for (let i = 0; i < selection.whiteCount; i++) {
+        const card = this.deck.drawByColor('white');
+        if (card) player.addCard(card, true); // true = 초기 카드
+      }
+    });
 
     this.status = 'playing';
   }
@@ -43,8 +79,8 @@ class Game {
     return this.getCurrentPlayer().id === playerId;
   }
 
-  // 덱에서 카드 뽑기 (턴 시작 시)
-  drawCard(playerId) {
+  // 덱에서 카드 뽑기 (턴 시작 시) - 색상 선택 가능
+  drawCard(playerId, color = null) {
     if (!this.isPlayerTurn(playerId)) {
       return { success: false, error: 'Not your turn' };
     }
@@ -54,7 +90,19 @@ class Game {
     }
 
     const currentPlayer = this.getCurrentPlayer();
-    const card = this.deck.draw();
+    let card;
+
+    // 색상이 지정되면 해당 색상 카드 뽑기
+    if (color === 'black' || color === 'white') {
+      card = this.deck.drawByColor(color);
+      if (!card) {
+        return { success: false, error: `No ${color} cards left` };
+      }
+    } else {
+      // 색상 미지정시 랜덤
+      card = this.deck.draw();
+    }
+
     currentPlayer.addCard(card);
 
     return {
@@ -69,6 +117,7 @@ class Game {
       return { success: false, error: 'Not your turn' };
     }
 
+    const currentPlayer = this.getCurrentPlayer();
     const opponent = this.getOpponentPlayer();
 
     if (!opponent.hasCard(cardIndex)) {
@@ -81,8 +130,25 @@ class Game {
       return { success: false, error: 'Card already revealed' };
     }
 
+    // 추측 정보 저장
+    const guessInfo = {
+      guesserId: playerId,
+      guesserName: currentPlayer.name,
+      targetId: opponent.id,
+      targetName: opponent.name,
+      cardIndex: cardIndex,
+      guessedNumber: guessedNumber,
+      actualCard: targetCard.toJSON(),
+      timestamp: Date.now()
+    };
+
     // 숫자만 비교 (색상은 이미 보임)
     const isCorrect = targetCard.number === guessedNumber;
+    guessInfo.isCorrect = isCorrect;
+
+    // 추측 기록에 추가
+    this.guessHistory.push(guessInfo);
+    this.lastGuess = guessInfo;
 
     if (isCorrect) {
       // 맞춤: 카드 공개, 추가 턴
@@ -96,7 +162,8 @@ class Game {
           correct: true,
           additionalTurn: false,
           gameEnded: true,
-          winner: this.winner
+          winner: this.winner,
+          guessInfo: guessInfo
         };
       }
 
@@ -104,11 +171,11 @@ class Game {
         success: true,
         correct: true,
         additionalTurn: true,
-        revealedCard: targetCard.toJSON()
+        revealedCard: targetCard.toJSON(),
+        guessInfo: guessInfo
       };
     } else {
       // 틀림: 방금 뽑은 카드를 공개
-      const currentPlayer = this.getCurrentPlayer();
       const revealedCard = currentPlayer.revealLastDrawnCard();
 
       // 자신의 모든 카드가 공개되었는지 확인
@@ -119,7 +186,8 @@ class Game {
           correct: false,
           gameEnded: true,
           winner: this.winner,
-          revealedCard: revealedCard ? revealedCard.toJSON() : null
+          revealedCard: revealedCard ? revealedCard.toJSON() : null,
+          guessInfo: guessInfo
         };
       }
 
@@ -129,7 +197,8 @@ class Game {
       return {
         success: true,
         correct: false,
-        revealedCard: revealedCard ? revealedCard.toJSON() : null
+        revealedCard: revealedCard ? revealedCard.toJSON() : null,
+        guessInfo: guessInfo
       };
     }
   }
@@ -170,7 +239,11 @@ class Game {
       yourInfo: player ? player.toJSON() : null,
       opponentInfo: opponent ? opponent.toJSON() : null,
       deckRemaining: this.deck.remainingCards(),
-      winner: this.winner
+      winner: this.winner,
+      lastGuess: this.lastGuess, // 마지막 추측 정보
+      deckBlackRemaining: this.deck.remainingBlackCards(),
+      deckWhiteRemaining: this.deck.remainingWhiteCards(),
+      opponentNewCardIndex: opponent ? opponent.lastDrawnCardIndex : null // 상대방이 방금 뽑은 카드 위치
     };
   }
 

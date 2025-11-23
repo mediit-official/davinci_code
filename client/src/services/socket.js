@@ -35,6 +35,11 @@ class SocketService {
     this.socket.emit('create-room', { name: playerName }, callback);
   }
 
+  // 봇과 함께 방 생성 (싱글 플레이어)
+  createRoomWithBot(playerName, callback) {
+    this.socket.emit('create-room-with-bot', { name: playerName }, callback);
+  }
+
   // 방 참가
   joinRoom(roomId, playerName, callback) {
     this.socket.emit('join-room', { roomId, playerName }, callback);

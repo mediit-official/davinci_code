@@ -7,15 +7,18 @@ class Player {
     this.lastDrawnCardIndex = null; // 이번 턴에 마지막으로 뽑은 카드의 인덱스
   }
 
-  addCard(card) {
+  addCard(card, isInitial = false) {
     this.cards.push(card);
     const oldLength = this.cards.length;
     this.sortCards();
     // 새로 추가된 카드의 정렬 후 인덱스 찾기
-    for (let i = 0; i < this.cards.length; i++) {
-      if (this.cards[i] === card) {
-        this.lastDrawnCardIndex = i;
-        break;
+    if (!isInitial) {
+      // 게임 중 뽑은 카드만 lastDrawnCardIndex 업데이트
+      for (let i = 0; i < this.cards.length; i++) {
+        if (this.cards[i] === card) {
+          this.lastDrawnCardIndex = i;
+          break;
+        }
       }
     }
   }

@@ -29,7 +29,7 @@ function GuessModal({ onGuess, onCancel, cardColor }) {
             <button
               key={num}
               type="button"
-              className={`number-btn ${selectedNumber === num ? 'selected' : ''}`}
+              className={`number-btn ${cardColor} ${selectedNumber === num ? 'selected' : ''}`}
               onClick={() => handleNumberSelect(num)}
             >
               {num}

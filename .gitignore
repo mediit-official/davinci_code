@@ -32,6 +32,9 @@ yarn-error.log*
 # Security - SSH Keys
 *.pem
 *.key
+*.pub
+lightsail-secure-key
+lightsail-secure-key.pub
 
 # Build artifacts
 *.tar.gz

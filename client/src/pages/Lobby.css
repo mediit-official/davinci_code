@@ -1,36 +1,55 @@
 .lobby {
   max-width: 800px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 20px;
 }
 
 .lobby-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 .lobby-header h1 {
-  font-size: 48px;
+  font-size: 36px;
   color: #2c3e50;
   margin: 0 0 10px 0;
 }
 
 .subtitle {
-  font-size: 18px;
+  font-size: 16px;
   color: #7f8c8d;
   margin: 0;
 }
 
+@media (min-width: 768px) {
+  .lobby {
+    padding: 40px 20px;
+  }
+
+  .lobby-header {
+    margin-bottom: 40px;
+  }
+
+  .lobby-header h1 {
+    font-size: 48px;
+  }
+
+  .subtitle {
+    font-size: 18px;
+  }
+}
+
 .player-name-section {
   display: flex;
+  flex-direction: column;
   gap: 10px;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 .player-name-section input {
-  flex: 1;
-  padding: 15px;
-  font-size: 16px;
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
   border: 2px solid #ddd;
   border-radius: 8px;
 }
@@ -40,20 +59,68 @@
   border-color: #3498db;
 }
 
-.create-room-btn {
-  padding: 15px 30px;
-  background-color: #27ae60;
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.create-room-btn, .create-bot-btn {
+  width: 100%;
+  padding: 12px;
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
+}
+
+.create-room-btn {
+  background-color: #27ae60;
 }
 
 .create-room-btn:hover {
   background-color: #229954;
+}
+
+.create-bot-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.create-bot-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.create-bot-btn::before {
+  content: '🤖';
+  margin-right: 8px;
+}
+
+@media (min-width: 768px) {
+  .player-name-section {
+    flex-direction: column;
+    margin-bottom: 40px;
+  }
+
+  .player-name-section input {
+    padding: 15px;
+    font-size: 16px;
+  }
+
+  .button-group {
+    flex-direction: row;
+  }
+
+  .create-room-btn, .create-bot-btn {
+    flex: 1;
+    padding: 15px 30px;
+    font-size: 16px;
+  }
 }
 
 .rooms-section h2 {
@@ -77,9 +144,9 @@
 
 .room-item {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
+  flex-direction: column;
+  gap: 12px;
+  padding: 15px;
   background-color: white;
   border: 2px solid #ecf0f1;
   border-radius: 8px;
@@ -93,16 +160,18 @@
 .room-info h3 {
   margin: 0 0 5px 0;
   color: #2c3e50;
+  font-size: 16px;
 }
 
 .room-info p {
   margin: 0;
   color: #7f8c8d;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .join-btn {
-  padding: 10px 25px;
+  width: 100%;
+  padding: 10px;
   background-color: #3498db;
   color: white;
   border: none;
@@ -117,11 +186,33 @@
   background-color: #2980b9;
 }
 
+@media (min-width: 768px) {
+  .room-item {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .room-info h3 {
+    font-size: 18px;
+  }
+
+  .room-info p {
+    font-size: 14px;
+  }
+
+  .join-btn {
+    width: auto;
+    padding: 10px 25px;
+  }
+}
+
 /* 대기실 스타일 */
 .waiting-room {
   background-color: white;
   border-radius: 10px;
-  padding: 40px;
+  padding: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
@@ -129,6 +220,17 @@
 .waiting-room h2 {
   color: #2c3e50;
   margin: 0 0 10px 0;
+  font-size: 20px;
+}
+
+@media (min-width: 768px) {
+  .waiting-room {
+    padding: 40px;
+  }
+
+  .waiting-room h2 {
+    font-size: 24px;
+  }
 }
 
 .room-id {

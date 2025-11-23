@@ -94,11 +94,21 @@
   font-weight: bold;
   border: 2px solid rgba(244, 228, 193, 0.3);
   border-radius: 8px;
-  background: rgba(0, 0, 0, 0.4);
-  color: #f4e4c1;
   cursor: pointer;
   transition: all 0.2s;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.number-btn.white {
+  background: linear-gradient(145deg, #fafafa, #e8e8e8);
+  color: #1a1a1a;
+  border-color: #d0d0d0;
+}
+
+.number-btn.black {
+  background: linear-gradient(145deg, #2a2a2a, #0a0a0a);
+  color: #ffffff;
+  border-color: #404040;
 }
 
 .number-btn:hover {

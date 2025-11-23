@@ -1,4 +1,5 @@
 const Game = require('./Game');
+const BotPlayer = require('./BotPlayer');
 const { v4: uuidv4 } = require('uuid');
 
 class GameManager {
@@ -6,6 +7,7 @@ class GameManager {
     this.rooms = new Map(); // roomId -> room info
     this.games = new Map(); // roomId -> Game instance
     this.playerRooms = new Map(); // playerId -> roomId
+    this.bots = new Map(); // roomId -> BotPlayer instance
   }
 
   createRoom(hostPlayer) {
@@ -108,6 +110,52 @@ class GameManager {
 
   getAllRooms() {
     return Array.from(this.rooms.values()).filter(room => room.status === 'waiting');
+  }
+
+  // 봇과 함께 게임 생성
+  createRoomWithBot(hostPlayer) {
+    const roomId = uuidv4();
+    const botPlayer = {
+      id: 'bot-' + uuidv4(),
+      name: 'AI Bot',
+      isBot: true
+    };
+
+    const room = {
+      id: roomId,
+      host: hostPlayer,
+      players: [hostPlayer, botPlayer],
+      status: 'playing', // 바로 게임 시작
+      createdAt: Date.now(),
+      hasBot: true
+    };
+
+    this.rooms.set(roomId, room);
+    this.playerRooms.set(hostPlayer.id, roomId);
+    this.playerRooms.set(botPlayer.id, roomId);
+
+    // 게임 생성
+    const game = new Game(roomId, hostPlayer, botPlayer);
+    this.games.set(roomId, game);
+
+    // 봇 플레이어 생성
+    const bot = new BotPlayer(game, botPlayer.id);
+    this.bots.set(roomId, bot);
+
+    return { room, game, bot };
+  }
+
+  getBot(roomId) {
+    return this.bots.get(roomId);
+  }
+
+  // 봇의 턴인지 확인
+  isBotTurn(roomId) {
+    const game = this.games.get(roomId);
+    if (!game) return false;
+
+    const currentPlayer = game.getCurrentPlayer();
+    return currentPlayer.id.startsWith('bot-');
   }
 }
 

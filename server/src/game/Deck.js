@@ -31,12 +31,29 @@ class Deck {
     return this.cards.pop();
   }
 
+  // 특정 색상의 카드 뽑기
+  drawByColor(color) {
+    const index = this.cards.findIndex(card => card.color === color);
+    if (index !== -1) {
+      return this.cards.splice(index, 1)[0];
+    }
+    return null;
+  }
+
   isEmpty() {
     return this.cards.length === 0;
   }
 
   remainingCards() {
     return this.cards.length;
+  }
+
+  remainingBlackCards() {
+    return this.cards.filter(card => card.color === 'black').length;
+  }
+
+  remainingWhiteCards() {
+    return this.cards.filter(card => card.color === 'white').length;
   }
 }
 

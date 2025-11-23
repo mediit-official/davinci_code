@@ -1,0 +1,46 @@
+.landscape-warning {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  padding: 20px;
+}
+
+.landscape-warning-content {
+  text-align: center;
+  color: white;
+  max-width: 400px;
+}
+
+.rotate-icon {
+  font-size: 80px;
+  margin-bottom: 20px;
+  animation: rotate 2s ease-in-out infinite;
+}
+
+@keyframes rotate {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(90deg);
+  }
+}
+
+.landscape-warning h2 {
+  font-size: 24px;
+  margin: 0 0 15px 0;
+  color: #fff;
+}
+
+.landscape-warning p {
+  font-size: 16px;
+  color: #aaa;
+  line-height: 1.6;
+}

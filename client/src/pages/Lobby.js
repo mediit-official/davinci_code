@@ -56,6 +56,27 @@ function Lobby({ onGameStart }) {
     });
   };
 
+  const handleCreateRoomWithBot = () => {
+    console.log('Bot button clicked!', playerName);
+
+    if (!playerName.trim()) {
+      alert('이름을 입력해주세요!');
+      return;
+    }
+
+    console.log('Creating bot room...');
+    socketService.createRoomWithBot(playerName, (response) => {
+      console.log('Bot room response:', response);
+      if (response.success) {
+        // 봇과의 게임은 바로 시작
+        console.log('Starting game with bot...');
+        onGameStart(response.gameState);
+      } else {
+        alert('봇 게임 생성 실패: ' + response.error);
+      }
+    });
+  };
+
   const handleJoinRoom = (roomId) => {
     if (!playerName.trim()) {
       alert('이름을 입력해주세요!');
@@ -126,9 +147,14 @@ function Lobby({ onGameStart }) {
           onChange={(e) => setPlayerName(e.target.value)}
           maxLength={20}
         />
-        <button onClick={handleCreateRoom} className="create-room-btn">
-          방 만들기
-        </button>
+        <div className="button-group">
+          <button onClick={handleCreateRoom} className="create-room-btn">
+            방 만들기
+          </button>
+          <button onClick={handleCreateRoomWithBot} className="create-bot-btn">
+            AI와 플레이 (연습모드)
+          </button>
+        </div>
       </div>
 
       <div className="rooms-section">
